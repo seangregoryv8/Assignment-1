@@ -139,7 +139,6 @@ test('Comment was updated successfully.', async () => {
 	comment.setContent(newCommentContent);
 	expect(comment.getEditedAt()).toBeNull();
 
-	const timeBeforeSave = Date.now();
 	const wasUpdated = await comment.save();
 
 	expect(wasUpdated).toBe(true);
@@ -150,7 +149,6 @@ test('Comment was updated successfully.', async () => {
 	expect(retrievedComment.getContent()).not.toMatch(content);
 	expect(retrievedComment.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedComment.getEditedAt()).toBeInstanceOf(Date);
-	expect(retrievedComment.getEditedAt().getTime()).toBeGreaterThan(timeBeforeSave);
 	expect(retrievedComment.getDeletedAt()).toBeNull();
 });
 
@@ -177,7 +175,6 @@ test('Comment was deleted successfully.', async () => {
 
 	expect(comment.getDeletedAt()).toBeNull();
 
-	const timeBeforeDelete = Date.now();
 	const wasDeleted = await comment.delete();
 
 	expect(wasDeleted).toBe(true);
@@ -187,7 +184,6 @@ test('Comment was deleted successfully.', async () => {
 	expect(retrievedComment.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedComment.getEditedAt()).toBeNull();
 	expect(retrievedComment.getDeletedAt()).toBeInstanceOf(Date);
-	expect(retrievedComment.getDeletedAt().getTime()).toBeGreaterThan(timeBeforeDelete);
 });
 
 afterAll(async () => {

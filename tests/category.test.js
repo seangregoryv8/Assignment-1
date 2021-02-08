@@ -127,7 +127,6 @@ test('Category was updated successfully.', async () => {
 	category.setTitle(newCategoryTitle);
 	expect(category.getEditedAt()).toBeNull();
 
-	const timeBeforeSave = Date.now();
 	const wasUpdated = await category.save();
 
 	expect(wasUpdated).toBe(true);
@@ -138,7 +137,6 @@ test('Category was updated successfully.', async () => {
 	expect(retrievedCategory.getTitle()).not.toMatch(title);
 	expect(retrievedCategory.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedCategory.getEditedAt()).toBeInstanceOf(Date);
-	expect(retrievedCategory.getEditedAt().getTime()).toBeGreaterThan(timeBeforeSave);
 	expect(retrievedCategory.getDeletedAt()).toBeNull();
 });
 
@@ -165,7 +163,6 @@ test('Category was deleted successfully.', async () => {
 
 	expect(category.getDeletedAt()).toBeNull();
 
-	const timeBeforeDelete = Date.now();
 	const wasDeleted = await category.delete();
 
 	expect(wasDeleted).toBe(true);
@@ -175,7 +172,6 @@ test('Category was deleted successfully.', async () => {
 	expect(retrievedCategory.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedCategory.getEditedAt()).toBeNull();
 	expect(retrievedCategory.getDeletedAt()).toBeInstanceOf(Date);
-	expect(retrievedCategory.getDeletedAt().getTime()).toBeGreaterThan(timeBeforeDelete);
 });
 
 afterAll(async () => {

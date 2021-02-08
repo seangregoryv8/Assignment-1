@@ -168,7 +168,6 @@ test('Post (Text) content was updated successfully.', async () => {
 	post.setContent(newPostContent);
 	expect(post.getEditedAt()).toBeNull();
 
-	const timeBeforeSave = Date.now();
 	const wasUpdated = await post.save();
 
 	expect(wasUpdated).toBe(true);
@@ -179,7 +178,6 @@ test('Post (Text) content was updated successfully.', async () => {
 	expect(retrievedPost.getContent()).not.toMatch(content);
 	expect(retrievedPost.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedPost.getEditedAt()).toBeInstanceOf(Date);
-	expect(retrievedPost.getEditedAt().getTime()).toBeGreaterThan(timeBeforeSave);
 	expect(retrievedPost.getDeletedAt()).toBeNull();
 });
 
@@ -226,15 +224,15 @@ test('Post was deleted successfully.', async () => {
 
 	expect(post.getDeletedAt()).toBeNull();
 
-	const timeBeforeDelete = Date.now();
 	const wasDeleted = await post.delete();
 
 	expect(wasDeleted).toBe(true);
 
 	const retrievedPost = await Post.findById(post.getId());
 
+	expect(retrievedPost.getCreatedAt()).toBeInstanceOf(Date);
+	expect(retrievedPost.getEditedAt()).toBeNull();
 	expect(retrievedPost.getDeletedAt()).toBeInstanceOf(Date);
-	expect(retrievedPost.getDeletedAt().getTime()).toBeGreaterThan(timeBeforeDelete);
 });
 
 afterAll(async () => {

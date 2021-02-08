@@ -137,7 +137,6 @@ test('User was updated successfully.', async () => {
 	newUser.setUsername(newUsername);
 	expect(newUser.getEditedAt()).toBeNull();
 
-	const timeBeforeSave = Date.now();
 	const wasUpdated = await newUser.save();
 
 	expect(wasUpdated).toBe(true);
@@ -148,7 +147,6 @@ test('User was updated successfully.', async () => {
 	expect(retrievedUser.getUsername()).not.toMatch(username);
 	expect(retrievedUser.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedUser.getEditedAt()).toBeInstanceOf(Date);
-	expect(retrievedUser.getEditedAt().getTime()).toBeGreaterThan(timeBeforeSave);
 	expect(retrievedUser.getDeletedAt()).toBeNull();
 });
 
@@ -162,7 +160,6 @@ test('User avatar was updated successfully.', async () => {
 	newUser.setAvatar(newAvatar);
 	expect(newUser.getEditedAt()).toBeNull();
 
-	const timeBeforeSave = Date.now();
 	const wasUpdated = await newUser.save();
 
 	expect(wasUpdated).toBe(true);
@@ -172,7 +169,6 @@ test('User avatar was updated successfully.', async () => {
 	expect(retrievedUser.getAvatar()).toMatch(newAvatar);
 	expect(retrievedUser.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedUser.getEditedAt()).toBeInstanceOf(Date);
-	expect(retrievedUser.getEditedAt().getTime()).toBeGreaterThan(timeBeforeSave);
 	expect(retrievedUser.getDeletedAt()).toBeNull();
 });
 
@@ -213,7 +209,6 @@ test('User was deleted successfully.', async () => {
 
 	expect(user.getDeletedAt()).toBeNull();
 
-	const timeBeforeDelete = Date.now();
 	const wasDeleted = await user.delete();
 
 	expect(wasDeleted).toBe(true);
@@ -223,7 +218,6 @@ test('User was deleted successfully.', async () => {
 	expect(retrievedUser.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedUser.getEditedAt()).toBeNull();
 	expect(retrievedUser.getDeletedAt()).toBeInstanceOf(Date);
-	expect(retrievedUser.getDeletedAt().getTime()).toBeGreaterThan(timeBeforeDelete);
 });
 
 afterAll(async () => {
