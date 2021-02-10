@@ -1,49 +1,16 @@
 const Database = require('../database/Database');
 
 class Model {
-	constructor(id) {
-		this.id = id;
-	}
-
-	static connect() {
-		return Database.connect();
-	}
-
-	getId() {
-		return this.id;
-	}
-
-	getCreatedAt() {
-		return this.createdAt;
-	}
-
-	getEditedAt() {
-		return this.editedAt;
-	}
-
-	getDeletedAt() {
-		return this.deletedAt;
-	}
-
-	setId(id) {
-		this.id = id;
-		return this;
-	}
-
-	setCreatedAt(createdAt) {
-		this.createdAt = createdAt;
-		return this;
-	}
-
-	setEditedAt(editedAt) {
-		this.editedAt = editedAt;
-		return this;
-	}
-
-	setDeletedAt(deletedAt) {
-		this.deletedAt = deletedAt;
-		return this;
-	}
+	constructor(id) { this.id = id; }
+	static connect = () => Database.connect();
+	getId = () => this.id;
+	setId(id) { this.id = id; return this; }
+	getCreatedAt = () => this.createdAt;
+	setCreatedAt(created) { this.createdAt = created; return this; }
+	getEditedAt = () => this.editedAt;
+	setEditedAt(edited) { this.editedAt = edited; return this; }
+	getDeletedAt = () => this.deletedAt;
+	setDeletedAt(deleted) { this.deletedAt = deleted; return this; }
 }
 
 module.exports = Model;

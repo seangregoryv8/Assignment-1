@@ -2,8 +2,10 @@ const mysql = require('mysql2/promise');
 require('dotenv').config({ path: `${__dirname}/.env` });
 
 class Database {
-	static async connect() {
-		const connection = await mysql.createConnection({
+	static async connect()
+	{
+		const connection = await mysql.createConnection(
+		{
 			host: process.env.DB_HOST,
 			user: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
@@ -16,7 +18,8 @@ class Database {
 	static async truncate(tables, autoIncrementStart = 1) {
 		const connection = await Database.connect();
 
-		try {
+		try
+		{
 			await connection.execute('SET FOREIGN_KEY_CHECKS = 0');
 
 			tables.forEach(async (table) => {
@@ -26,12 +29,8 @@ class Database {
 
 			await connection.execute('SET FOREIGN_KEY_CHECKS = 1');
 		}
-		catch (exception) {
-			console.log(exception.sqlMessage);
-		}
-		finally {
-			await connection.end();
-		}
+		catch (exception) { console.log(exception.sqlMessage); }
+		finally { await connection.end(); }
 	}
 }
 

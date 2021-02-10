@@ -9,7 +9,7 @@ beforeEach(async () => {
 	await Database.truncate(['user'], initialUserId);
 });
 
-test('User was created successfully.', async () => {
+test.only('User was created successfully.', async () => {
 	const username = faker.internet.userName();
 	const email = faker.internet.email();
 	const password = faker.internet.password();
