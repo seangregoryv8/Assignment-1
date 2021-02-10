@@ -78,6 +78,11 @@ Even though we won't be implementing many of the features for this assignment, h
 
 ## 🧪 Testing
 
+> 💡 You must complete the tests in this order: `User > Category > Post > Comment`. This is because:
+> - a `Comment` cannot be created without a `Post` existing in the database.
+> - a `Post` cannot be created without a `Category` existing in the database.
+> - a `Category` cannot be created without a `User` existing in the database.
+
 If you stick a `.only` on a test, you know that Jest will skip all tests that don't have a `.only` on them. However, this does not apply for multiple files. Even if one test inside one file has `.only`, it will only run that one test in that one file, but it will still run all the other tests in all the other files. This can get annoying when working so here are a couple of options to only **run one test suite at a time**:
 
 1. Specify the name of the test suite as an argument: `npm run test -- user.test.js` (**easier**)
