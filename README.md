@@ -79,6 +79,7 @@ Even though we won't be implementing many of the features for this assignment, h
 ## 🧪 Testing
 
 > 💡 You must complete the tests in this order: `User > Category > Post > Comment`. This is because:
+>
 > - a `Comment` cannot be created without a `Post` existing in the database.
 > - a `Post` cannot be created without a `Category` existing in the database.
 > - a `Category` cannot be created without a `User` existing in the database.
