@@ -200,7 +200,7 @@ test('User was not updated with blank email.', async () => {
 	expect(wasUpdated).toBe(false);
 });
 
-test.only('User was deleted successfully.', async () => {
+test('User was deleted successfully.', async () => {
 	const user = await User.create(
 		faker.internet.userName(),
 		faker.internet.email(),
@@ -215,7 +215,7 @@ test.only('User was deleted successfully.', async () => {
 
 	const retrievedUser = await User.findById(user.getId());
 
-	//expect(retrievedUser.getCreatedAt()).toBeInstanceOf(Date);
+	expect(retrievedUser.getCreatedAt()).toBeInstanceOf(Date);
 	expect(retrievedUser.getEditedAt()).toBeNull();
 	expect(retrievedUser.getDeletedAt()).toBeInstanceOf(Date);
 });

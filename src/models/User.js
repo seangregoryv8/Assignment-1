@@ -141,11 +141,10 @@ class User extends Model
 	async delete()
 	{
 		const connection = await Model.connect();
-
         this.setDeletedAt(new Date())
-		const sql = `DELETE FROM \`user\` WHERE id = ?`;
+        let sql = `UPDATE \`user\` SET deleted_at = ? WHERE id = ?`;
 		let results;
-		try { [results] = await connection.execute(sql, [this.id]); }
+		try { [results] = await connection.execute(sql, [this.deletedAt, this.id]); }
 		catch (error) { console.log(error); return false; }
 		finally{ await connection.end(); }
         return true;
