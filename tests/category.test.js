@@ -17,7 +17,7 @@ beforeEach(async () => {
 	);
 });
 
-test('Category was created successfully.', async () => {
+test.only('Category was created successfully.', async () => {
 	const title = faker.lorem.word();
 	const description = faker.lorem.sentence();
 	const category = await Category.create(user.getId(), title, description);
