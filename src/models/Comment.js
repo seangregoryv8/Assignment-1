@@ -13,21 +13,18 @@ class Comment extends Model
      * @param {number} userId
      * @param {User} user
      * @param {number} replyId
-     * @param {User} reply
+     * @param {Comment} reply
      * @param {string} content 
      * @param {Date} created 
      * @param {Date} edited 
      * @param {Date} deleted 
      */
-    constructor(id, postId, post, userId, user, title, type, content, created, edited, deleted)
+    constructor(id, post, user, reply, content, created, edited, deleted)
     {
         super(id);
-        this.setPostId(postId);
         this.setPost(post);
-        this.setUserId(userId);
         this.setUser(user);
-        this.setReplyId(replyId);
-        this.setReply(reply);
+        this.setRepliedTo(reply);
         this.setContent(content);
         this.setCreatedAt(created);
         this.setEditedAt(edited);
@@ -36,18 +33,12 @@ class Comment extends Model
     static isEmpty = value => (value == null || value == "" || value == " ")
     isEmpty = value => (value == null || value == "" || value == " ")
 
-    static isNull = value => (value == null) ? null : value
+    static isNull = value => (value == null || value == undefined) ? null : value
 
-    getUserId = () => this.userId;
-    setUserId = value => { this.userId = value; }
     getUser = () => this.user;
     setUser = value => { this.user = value; }
-    getReplyId = () => this.replyId;
-    setUserId = value => { this.replyId = value; }
-    getReply = () => this.reply;
-    setReply = value => { this.reply = value; }
-    getPostId = () => this.postId;
-    setPostId = value => { this.postId = value; }
+    getRepliedTo = () => this.reply;
+    setRepliedTo = value => { this.reply = value; }
     getPost = () => this.post;
     setPost = value => { this.post = value; }
 	getContent = () => this.content;
@@ -60,19 +51,22 @@ class Comment extends Model
      * @param {number} replyId 
      * @param {string} content 
      */
-    static async create(postId, userId, replyId, content)
+    static async create(userId, postId, content, replyId)
     {
         const connection = await Model.connect();
-        const sql = `INSERT INTO \`comment\` (post_id, user_id, reply_id, content) VALUES (?, ?, ?, ?) `;
+        const sql = `INSERT INTO \`comment\` (post_id, content) VALUES (?, ?) `;
         let results;
-        try { [results] = await connection.execute(sql, [postId, userId, replyId, content]); }
+        try { [results] = await connection.execute(sql, [postId, content]); }
         catch (error) { console.log(error); return null; }
         finally { await connection.end(); }
-        const user = await User.findById(userId), reply = await User.findById(replyId), post = await Post.findById(postId);
-        let comment = (this.isEmpty(user) || this.isEmpty(post) || this.isEmpty(reply) || this.isEmpty(content)) ?
-            null : new Comment(results.insertId, postId, post, userId, user, replyId, reply, content, new Date(), null, null);
+        const user = (userId != null) ? await User.findById(userId) : null;
+        const post = await Post.findById(postId);
+        const reply = (replyId != null || replyId != undefined) ? await Comment.findById(replyId) : null;
+        let comment = (this.isEmpty(post) || this.isEmpty(content) || this.isEmpty(user)) ?
+            null : new Comment(results.insertId, post, user, reply, content, new Date(), null, null);
         return comment;
     }
+
     /**
      * Finds the Comment by its ID
      * @param {number} id The User ID.
@@ -88,12 +82,10 @@ class Comment extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userId),
-            _reply = await User.findById(results[0].replyId), _replyId = this.isNull(results[0].replyId),
-            _post = await Post.findById(results[0].postId), _postId = this.isNull(results[0].postId),
+        let _user = await User.findById(results[0].user_id), _reply = await Comment.findById(results[0].reply_id), _post = await Post.findById(results[0].post_id),
             _content = this.isNull(results[0].content), _created = (results[0].created_at != null) ? results[0].created_at : new Date(),
             _edited = this.isNull(results[0].edited_at), _deleted = this.isNull(results[0].deleted_at);
-        let comment = new Post(id, _postId, _post, _userId, _user, _replyId, _reply, _content, _created, _edited, _deleted);
+        let comment = new Comment(id, _post, _user, _reply, _content, _created, _edited, _deleted);
         return comment;
     }
     
@@ -107,10 +99,16 @@ class Comment extends Model
             return false;
 		const connection = await Model.connect();
         this.setEditedAt(new Date());
-        let sql = `UPDATE \`comment\` SET post_id = ?, user_id = ?, reply_id = ?, _content = ?, created_at = ?, edited_at = ? WHERE id = ?`;
-		let results;
-		try { [results] = await connection.execute(sql,
-            [this.getPostId(), this.getUserId(), this.getReplyId(), this.getContent(), this.getCreatedAt(), this.getEditedAt(), this.getId()]); }
+		let results, _user = this.getUser(), _reply = this.getRepliedTo()
+        let sql = (_reply != null) ?
+            `UPDATE \`comment\` SET user_id = ?, reply_id = ?, content = ?, created_at = ?, edited_at = ? WHERE id = ?` : 
+            `UPDATE \`comment\` SET user_id = ?, content = ?, created_at = ?, edited_at = ? WHERE id = ?`;
+		try
+        {
+            [results] = (_reply != null) ?
+                await connection.execute(sql, [_user.getId(), _reply.getId(), this.getContent(), this.getCreatedAt(), this.getEditedAt(), this.getId()]) : 
+                await connection.execute(sql, [_user.getId(), this.getContent(), this.getCreatedAt(), this.getEditedAt(), this.getId()]);
+        }
 		catch (error) { console.log(error); return false; }
 		finally{ await connection.end(); }
 		return true;

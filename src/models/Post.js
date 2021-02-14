@@ -18,12 +18,10 @@ class Post extends Model
      * @param {Date} edited 
      * @param {Date} deleted 
      */
-    constructor(id, userId, user, catId, cat, title, type, content, created, edited, deleted)
+    constructor(id, user, cat, title, type, content, created, edited, deleted)
     {
         super(id);
-        this.setUserId(userId);
         this.setUser(user);
-        this.setCatId(catId);
         this.setCategory(cat);
         this.setTitle(title);
         this.setType(type);
@@ -37,12 +35,8 @@ class Post extends Model
 
     static isNull = value => (value == null) ? null : value
 
-    getUserId = () => this.userId;
-    setUserId = value => { this.userId = value; }
     getUser = () => this.user;
     setUser = value => { this.user = value; }
-    getCatId = () => this.catId;
-    setCatId = value => { this.catId = value; }
     getCategory = () => this.cat;
     setCategory = value => { this.cat = value; }
 	getTitle = () => this.title;
@@ -70,9 +64,10 @@ class Post extends Model
         try { [results] = await connection.execute(sql, [userId, catId, title, type, content]); }
         catch (error) { console.log(error); return null; }
         finally { await connection.end(); }
+        if (this.isEmpty(title) || this.isEmpty(type) || this.isEmpty(content))
+            return null;
         const user = await User.findById(userId), cat = await Category.findById(catId);
-        let post = (this.isEmpty(user) || this.isEmpty(cat) || this.isEmpty(title) || this.isEmpty(type) || this.isEmpty(content)) ?
-            null : new Post(results.insertId, userId, user, catId, cat, title, type, content, new Date(), null, null);
+        let post = (this.isEmpty(user) || this.isEmpty(cat)) ? null : new Post(results.insertId, user, cat, title, type, content, new Date(), null, null);
         return post;
     }
     /**
@@ -90,12 +85,12 @@ class Post extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userId),
-            _cat = await Category.findById(results[0].catId), _catId = this.isNull(results[0].catId),
+        let _user = await User.findById(results[0].user_id),
+            _cat = await Category.findById(results[0].category_id),
             _title = this.isNull(results[0].title), _type = this.isNull(results[0].type), _content = this.isNull(results[0].content),
             _created = (results[0].created_at != null) ? results[0].created_at : new Date(),
             _edited = this.isNull(results[0].edited_at), _deleted = this.isNull(results[0].deleted_at);
-        let post = new Post(id, _userId, _user, _catId, _cat, _title, _type, _content, _created, _edited, _deleted);
+        let post = new Post(id, _user, _cat, _title, _type, _content, _created, _edited, _deleted);
         return post;
     }
     /**
@@ -113,12 +108,12 @@ class Post extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userId),
-            _cat = await Category.findById(results[0].catId), _catId = this.isNull(results[0].catId),
+        let _user = await User.findById(results[0].user_id),
+            _cat = await Category.findById(results[0].category_id),
             _id = this.isNull(results[0].id), _type = this.isNull(results[0].type), _content = this.isNull(results[0].content),
             _created = (results[0].created_at != null) ? results[0].created_at : new Date(),
-            _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
-        let post = new Post(_id, _user, _userId, _cat, _catId, title, _type, _content, _created, _edited, _deleted);
+             _edited = this.isNull(results[0].edited_at), _deleted = this.isNull(results[0].deleted_at);
+        let post = new Post(_id, _user, _cat, title, _type, _content, _created, _edited, _deleted);
         return post;
     }
     

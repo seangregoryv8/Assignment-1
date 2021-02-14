@@ -128,7 +128,7 @@ class User extends Model
         if (this.username == null || this.email == null || this.username == '' || this.email == '')
             return false;
 		const connection = await Model.connect();
-        this.setEditedAt(new Date())
+        this.setEditedAt(new Date());
         let avatar = (this.getAvatar() != null) ? this.getAvatar() : null;
         let sql = `UPDATE \`user\` SET username = ?, email = ?, password = ?, avatar = ?, created_at = ?, edited_at = ? WHERE id = ?`;
 		let results;
@@ -146,7 +146,7 @@ class User extends Model
 	async delete()
 	{
 		const connection = await Model.connect();
-        this.setDeletedAt(new Date())
+        this.setDeletedAt(new Date());
         let sql = `UPDATE \`user\` SET deleted_at = ? WHERE id = ?`;
 		let results;
 		try { [results] = await connection.execute(sql, [this.deletedAt, this.id]); }

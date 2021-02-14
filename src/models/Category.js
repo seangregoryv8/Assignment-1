@@ -14,10 +14,9 @@ class Category extends Model
      * @param {Date} edited 
      * @param {Date} deleted 
      */
-    constructor(id, userId, user, title, description, created, edited, deleted)
+    constructor(id, user, title, description, created, edited, deleted)
     {
         super(id)
-        this.setUserId(userId);
         this.setUser(user);
         this.setTitle(title);
         this.setDescription(description);
@@ -26,8 +25,6 @@ class Category extends Model
         this.setDeletedAt(deleted);
     }
     
-    getUserId = () => this.userId;
-    setUserId = value => { this.userId = value; }
     getUser = () => this.user;
     setUser = value => { this.user = value; }
 	getTitle = () => this.title;
@@ -50,7 +47,7 @@ class Category extends Model
         catch (error) { console.log(error); return null; }
         finally { await connection.end(); }
         const user = await User.findById(userId);
-        let cat = (user == null || this.isEmpty(title)) ? null : new Category(results.insertId, userId, user, title, description, new Date(), null, null);
+        let cat = (user == null || this.isEmpty(title)) ? null : new Category(results.insertId, user, title, description, new Date(), null, null);
         return cat;
     }
     /**
@@ -68,11 +65,10 @@ class Category extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userId);
-        let _title = this.isNull(results[0].title), _description = this.isNull(results[0].description)
-        let _created = (results[0].created_at != null) ? results[0].created_at : new Date();
-        let _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
-        let category = new Category(id, _user, _userId, _title, _description, _created, _edited, _deleted);
+        let _user = await User.findById(results[0].user_Id), _title = this.isNull(results[0].title), _description = this.isNull(results[0].description),
+            _created = (results[0].created_at != null) ? results[0].created_at : new Date(),
+            _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
+        let category = new Category(id, _user, _title, _description, _created, _edited, _deleted);
         return category;
     }
     /**
@@ -90,11 +86,10 @@ class Category extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userID);
-        let _id = this.isNull(results[0].id), _description = this.isNull(results[0].description)
-        let _created = (results[0].created_at != null) ? results[0].created_at : new Date();
-        let _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
-        let category = new Category(_id, _user, _userId, title, _description, _created, _edited, _deleted);
+        let _user = await User.findById(results[0].user_Id), _id = this.isNull(results[0].id), _description = this.isNull(results[0].description),
+            _created = (results[0].created_at != null) ? results[0].created_at : new Date(),
+            _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
+        let category = new Category(_id, _user,/* _userId,*/ title, _description, _created, _edited, _deleted);
         return category;
     }
     
