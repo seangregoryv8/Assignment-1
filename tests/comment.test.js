@@ -35,7 +35,11 @@ beforeEach(async () => {
 	);
 });
 
-test.only('Comment was created successfully.', async () => {
+test.only('Placeholder', async () => {
+
+});
+
+test('Comment was created successfully.', async () => {
 	const content = faker.lorem.paragraph();
 	const comment = await Comment.create(
 		user.getId(),

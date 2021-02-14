@@ -1,7 +1,8 @@
 const Model = require('./Model');
 
-class Comment extends Model {
-
+class Comment extends Model
+{
+    
 }
 
 module.exports = Comment;

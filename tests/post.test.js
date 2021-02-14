@@ -25,7 +25,11 @@ beforeEach(async () => {
 	);
 });
 
-test.only('Post was created successfully.', async () => {
+test.only('Placeholder', async () => {
+	
+});
+
+test('Post was created successfully.', async () => {
 	const title = faker.lorem.sentence();
 	const type = Math.random() < 0.5 ? 'Text' : 'URL'; // Randomly pick a text post or URL post.
 	const content = faker.lorem.paragraph();

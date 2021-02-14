@@ -13,13 +13,13 @@ class User extends Model
      * @param {Date} edited_at 
      * @param {Date} deleted_at 
      */
-    constructor(id, username, email, password, avatar, created_at, edited_at, deleted_at)
+    constructor(id, user, email, password, avatar, created_at, edited_at, deleted_at)
     {
         super(id);
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.avatar = avatar;
+        this.setUsername(user);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setAvatar(avatar);
         this.setCreatedAt(created_at);
         this.setEditedAt(edited_at);
         this.setDeletedAt(deleted_at);
@@ -40,6 +40,9 @@ class User extends Model
      * @returns True if the value is empty, false if it isnt
      */
     static isEmpty = value => (value == null || value == "" || value == " ");
+    
+    static isNull = value => (value == null) ? null : value
+
     /**
      * Creates a new User in the database and returns a User object
      * @param {string} username
@@ -73,22 +76,18 @@ class User extends Model
 		try { [results] = await connection.execute(sql, [id]); }
 		catch (error) { console.log(error); return null; }
 		finally { await connection.end(); }
-        let user = 0, avatar = 0, created = 0, edited = 0, deleted = 0;
         if (results.length == 0)
-            user = null;
-        else
-        {
-            avatar = (results[0].avatar != null) ? results[0].avatar : null;
-            created = (results[0].created_at != null) ? results[0].created_at : new Date();
-            edited = (results[0].edited_at != null) ? results[0].edited_at : null;
-            deleted = (results[0].deleted_at != null) ? results[0].deleted_at : null;
-            user = new User(results[0].id, results[0].username, results[0].email, results[0].password, avatar, created, edited, deleted);
-        }
+            return null;
+        let _username = this.isNull(results[0].username), _email = this.isNull(results[0].email);
+        let _password = this.isNull(results[0].password), _avatar = this.isNull(results[0].avatar);
+        let _created = (results[0].created_at != null) ? results[0].created_at : new Date();
+        let _edited = this.isNull(results[0].edited_at), _deleted = this.isNull(results[0].deleted_at);
+        let user = new User(id, _username, _email, _password, _avatar, _created, _edited, _deleted);
         return user;
     }
     /**
      * Finds the User by their email and retruns a User object.
-     * @param {string} id The User email.
+     * @param {string} email The User email.
      * @returns {User} The User object
      */
     static async findByEmail(email)
@@ -101,21 +100,17 @@ class User extends Model
 		try { [results] = await connection.execute(sql, [email]); }
 		catch (error) { console.log(error); return null; }
 		finally { await connection.end(); }
-        let user = 0, avatar = 0, created = 0, edited = 0, deleted = 0;
         if (results.length == 0)
-            user = null;
-        else
-        {
-            avatar = (results[0].avatar != null) ? results[0].avatar : null;
-            created = (results[0].created_at != null) ? results[0].created_at : new Date();
-            edited = (results[0].edited_at != null) ? results[0].edited_at : null;
-            deleted = (results[0].deleted_at != null) ? results[0].deleted_at : null;
-            user = new User(results[0].id, results[0].username, results[0].email, results[0].password, avatar, created, edited, deleted);
-        }
+            return null;
+        let _username = this.isNull(results[0].username), _id = this.isNull(results[0].id);
+        let _password = this.isNull(results[0].password), _avatar = this.isNull(results[0].avatar);
+        let _created = (results[0].created_at != null) ? results[0].created_at : new Date();
+        let _edited = this.isNull(results[0].edited_at), _deleted = this.isNull(results[0].deleted_at);
+        let user = new User(_id, _username, email, _password, _avatar, _created, _edited, _deleted);
         return user;
     }
 	/**
-	 * Persists the current state of this Pokemon object to the database.
+	 * Persists the current state of this User object to the database.
 	 * @returns {boolean} If the operation was successful.
 	 */
 	async save()
@@ -128,7 +123,7 @@ class User extends Model
         let sql = `UPDATE \`user\` SET username = ?, email = ?, password = ?, avatar = ?, created_at = ?, edited_at = ? WHERE id = ?`;
 		let results;
 		try { [results] = await connection.execute(sql,
-            [this.username, this.email, this.password, avatar, this.createdAt, this.editedAt, this.id]); }
+            [this.getUsername(), this.getEmail(), this.getPassword(), avatar, this.getCreatedAt(), this.getEditedAt(), this.getId()]); }
 		catch (error) { console.log(error); return false; }
 		finally{ await connection.end(); }
 		return true;
