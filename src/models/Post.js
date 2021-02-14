@@ -7,9 +7,7 @@ class Post extends Model
     /**
      * Creates a new Category
      * @param {number} id 
-     * @param {number} userId
      * @param {User} user
-     * @param {number} catId
      * @param {Category} cat
      * @param {string} title
      * @param {Enumerator} type
@@ -72,8 +70,8 @@ class Post extends Model
     }
     /**
      * Finds the Post by its ID
-     * @param {number} id The User ID.
-     * @returns {Post} The User object
+     * @param {number} id The Post ID.
+     * @returns {Post} The Post object
      */
     static async findById(id)
     {
@@ -95,8 +93,8 @@ class Post extends Model
     }
     /**
      * Finds the Post by its title
-     * @param {string} title The Category title
-     * @returns {Category} The Category object
+     * @param {string} title The Post title
+     * @returns {Post} The Post object
      */
     static async findByTitle(title)
     {
@@ -137,7 +135,7 @@ class Post extends Model
 	}
     
 	/**
-	 * Deletes the Category with this ID from the database.
+	 * Deletes the Post with this ID from the database.
 	 * @returns {boolean} If the operation was successful.
 	 */
 	async delete()

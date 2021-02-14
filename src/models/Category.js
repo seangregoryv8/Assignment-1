@@ -6,7 +6,6 @@ class Category extends Model
     /**
      * Creates a new Category
      * @param {number} id 
-     * @param {number} userId 
      * @param {User} user
      * @param {string} title 
      * @param {string} description 
@@ -35,7 +34,12 @@ class Category extends Model
     static isEmpty = value => (value == null || value == "" || value == " ")
 
     static isNull = value => (value == null) ? null : value
-
+    /**
+     * Creates a new Post class
+     * @param {number} userId 
+     * @param {string} title 
+     * @param {string} description 
+     */
     static async create(userId, title, description)
     {
         const connection = await Model.connect();

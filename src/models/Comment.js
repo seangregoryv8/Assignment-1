@@ -6,13 +6,10 @@ const Post = require('./Post'); //Put in
 class Comment extends Model
 {
     /**
-     * Creates a new Category
+     * Creates a new Comment
      * @param {number} id 
-     * @param {number} postId
      * @param {Post} post
-     * @param {number} userId
      * @param {User} user
-     * @param {number} replyId
      * @param {Comment} reply
      * @param {string} content 
      * @param {Date} created 
@@ -69,8 +66,8 @@ class Comment extends Model
 
     /**
      * Finds the Comment by its ID
-     * @param {number} id The User ID.
-     * @returns {Comment} The User object
+     * @param {number} id The Comment ID.
+     * @returns {Comment} The Comment object
      */
     static async findById(id)
     {
