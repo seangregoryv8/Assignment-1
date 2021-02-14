@@ -6,7 +6,8 @@ class Category extends Model
     /**
      * Creates a new Category
      * @param {number} id 
-     * @param {User} userId 
+     * @param {number} userId 
+     * @param {User} user
      * @param {string} title 
      * @param {string} description 
      * @param {Date} created 
@@ -24,6 +25,16 @@ class Category extends Model
         this.setEditedAt(edited);
         this.setDeletedAt(deleted);
     }
+    
+    getUserId = () => this.userId;
+    setUserId = value => { this.userId = value; }
+    getUser = () => this.user;
+    setUser = value => { this.user = value; }
+	getTitle = () => this.title;
+	setTitle = value => { this.title = value; }
+    getDescription = () => this.description;
+    setDescription = value => { this.description = value; }
+
     static isEmpty = value => (value == null || value == "" || value == " ")
 
     static isNull = value => (value == null) ? null : value
@@ -31,9 +42,11 @@ class Category extends Model
     static async create(userId, title, description)
     {
         const connection = await Model.connect();
-        const sql = `INSERT INTO \`category\` (title, description) VALUES (?, ?) `;
+        const sql = `INSERT INTO \`category\` (user_id, title, description) VALUES (?, ?, ?) `;
         let results;
-        try { [results] = await connection.execute(sql, [title, description]); }
+        if (this.findByTitle(title) == null)
+            return null;
+        try { [results] = await connection.execute(sql, [userId, title, description]); }
         catch (error) { console.log(error); return null; }
         finally { await connection.end(); }
         const user = await User.findById(userId);
@@ -55,11 +68,11 @@ class Category extends Model
 		finally { await connection.end(); }
         if (results.length == 0)
             return null;
-        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userID);
+        let _user = await User.findById(results[0].userId), _userId = this.isNull(results[0].userId);
         let _title = this.isNull(results[0].title), _description = this.isNull(results[0].description)
         let _created = (results[0].created_at != null) ? results[0].created_at : new Date();
         let _edited = this.isNull(results[0].edited_at),  _deleted = this.isNull(results[0].deleted_at);
-        let category = new Category(results[0].id, _user, _userId, _title, _description, _created, _edited, _deleted);
+        let category = new Category(id, _user, _userId, _title, _description, _created, _edited, _deleted);
         return category;
     }
     /**
@@ -119,14 +132,6 @@ class Category extends Model
 		finally{ await connection.end(); }
         return true;
 	}
-    getUserId = () => this.userId;
-    setUserId = value => { this.userId = value; }
-    getUser = () => this.user;
-    setUser = value => { this.user = value; }
-	getTitle = () => this.title;
-	setTitle = value => { this.title = value; }
-    getDescription = () => this.description;
-    setDescription = value => { this.description = value; }
     
 }
 

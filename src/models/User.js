@@ -24,6 +24,16 @@ class User extends Model
         this.setEditedAt(edited_at);
         this.setDeletedAt(deleted_at);
     }
+
+	getUsername = () => this.username;
+	setUsername = value => { this.username = value; }
+	getEmail = () => this.email;
+	setEmail = value => { this.email = value; }
+	getPassword = () => this.password;
+	setPassword = value => { this.password = value; }
+	getAvatar = () => this.avatar;
+	setAvatar = value => { this.avatar = value; }
+    
     /**
      * Sees if the email is actually valid
      * @param {email}
@@ -144,14 +154,6 @@ class User extends Model
 		finally{ await connection.end(); }
         return true;
 	}
-	getUsername = () => this.username;
-	setUsername = value => { this.username = value; }
-	getEmail = () => this.email;
-	setEmail = value => { this.email = value; }
-	getPassword = () => this.password;
-	setPassword = value => { this.password = value; }
-	getAvatar = () => this.avatar;
-	setAvatar = value => { this.avatar = value; }
 }
 
 module.exports = User;
