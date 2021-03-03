@@ -11,13 +11,11 @@ class Database {
 			password: process.env.DB_PASSWORD,
 			database: process.env.DB_NAME,
 		});
-
 		return connection;
 	}
 
 	static async truncate(tables, autoIncrementStart = 1) {
 		const connection = await Database.connect();
-
 		try
 		{
 			await connection.execute('SET FOREIGN_KEY_CHECKS = 0');
